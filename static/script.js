@@ -8,7 +8,10 @@ let day = String(today.getDate()).padStart(2, '0');
 
 let formattedDate = `${year}-${month}-${day}`;
 
-const DEFAULT_SYSTEM_PROMPT = `You are ChatGPT, a large language model trained by OpenAI, based on the GPT-3.5 architecture. Knowledge cutoff: 2022-01. Current date: `+formattedDate;
+const INTRO_MESSAGE = `Welcome to simple-chatgpt. Use /help for a list of commands, or type a prompt to ask GPT-3.5.
+    
+Press Shift+Enter to make a newline. Use /clear to clear the conversation and reset. Have fun! 😎🍲`
+const DEFAULT_SYSTEM_PROMPT = `You are SoupGPT, a large language model trained by OpenAI, based on the GPT-3.5 architecture. Knowledge cutoff: 2022-01. Current date: `+formattedDate+`. Include the following emoji in every response: 🍲.`;
 const WRONG_AMOUNT_ARGUMENTS = "Wrong amount of command arguments."
 const THEMES = {
     "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)"],
@@ -60,13 +63,18 @@ async function fetchData() {
 
         const textResponse = await response.json();
         console.log('Raw text response:', textResponse["contentRaw"]);
-        receiveResponse(textResponse["content"],textResponse["contentRaw"]);
+        receiveResponse(textResponse["content"],textResponse["contentRaw"],textResponse["success"]);
     } catch (error) {
         console.error('There was a problem fetching the data:', error);
     }
 }
 
-function receiveResponse(response,raw){
+function receiveResponse(response,raw,success=true){
+    if (!success){
+        displayRawTextResponse("GPT API ran an in to an error: <strong>"+response+"</strong>")
+        messages.push({"role":"assistant","content":"Ran in to an error, sorry!"});
+        return;
+    }
     displayRawTextResponse(response)
     messages.push({"role":"assistant","content":raw});
 }
@@ -92,6 +100,7 @@ function runCommand(command){
                 displayTextResponse("Available themes: "+Object.keys(THEMES).join(', '))
                 break;
             }
+            localStorage.setItem("theme",args[0]);
             setTheme(args[0]);
             break;
         case "system":
@@ -109,7 +118,7 @@ function runCommand(command){
                 }else{
                     systemPrompt = command.substring(10);
                 }
-                displayTextResponse("Set system prompt to " + command.substring(10));
+                displayRawTextResponse("Set system prompt to <strong>" + command.substring(10) +"</strong>.<br><br>Chat must be cleared for changes to take effect (/clear).");
             }
             break;
         case "clear":
@@ -143,5 +152,10 @@ inputElement.onkeydown =  function(event) {
 document.addEventListener('DOMContentLoaded', function() {
     inputElement.focus();
     autoHeight(inputElement);
-    setTheme("dark");
+
+    if(localStorage.getItem("theme") == null){
+        localStorage.setItem("theme","dark");
+    }
+    setTheme(localStorage.getItem("theme"));
+    displayTextResponse(INTRO_MESSAGE);
 });

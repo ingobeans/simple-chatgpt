@@ -11,10 +11,15 @@ def home():
 
 @app.route("/api/get_response", methods=["POST"])
 def get_response():
-    content = request.json
-    textRaw = gpt.get_resp(content["messages"])
+    try:
+        content = request.json
+        success = True
+        textRaw = gpt.get_resp(content["messages"])
+    except Exception as e:
+        textRaw = str(e)
+        success = False
     text = bleach.clean(textRaw)
     text = md.render(src=text)
-    return jsonify(contentRaw=textRaw,content=text)
+    return jsonify(contentRaw=textRaw,content=text,success=success)
 
 app.run()
