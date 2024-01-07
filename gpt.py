@@ -48,9 +48,3 @@ def get_resp(messages:list[dict],temperature:float=0.5,frequency_penalty:float=0
             except:
                 pass
     return full
-
-def get_prompt(prompt:str) -> str:
-    return get_resp([{"role":"user","content":prompt}])
-
-def complete(text:str) -> str:
-    return get_resp([{"role":"assistant","content":text}])

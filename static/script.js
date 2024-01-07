@@ -16,7 +16,11 @@ const WRONG_AMOUNT_ARGUMENTS = "Wrong amount of command arguments."
 const THEMES = {
     "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)"],
     "light": ["rgb(238, 238, 238)","rgb(39, 39, 39)","rgb(255, 255, 255)","rgb(27, 27, 27)"],
-    "aquatic":["rgb(28, 29, 43)","rgb(200, 206, 230)","rgb(20, 19, 32)","rgb(255, 255, 255)"]
+    "aquatic":["rgb(28, 29, 43)","rgb(200, 206, 230)","rgb(20, 19, 32)","rgb(255, 255, 255)"],
+    "field":["rgb(92, 172, 97)","rgb(0, 0, 0)","rgb(88, 155, 83)","rgb(0, 0, 0)"],
+    "sand":["rgb(134, 99, 61)","rgb(226, 230, 200)","rgb(132, 81, 16)","rgb(255, 255, 255)"],
+    "mint":["rgb(179, 213, 163)","rgb(39, 39, 39)","rgb(144, 189, 151)","rgb(0, 0, 0)"],
+    "kirby":["rgb(244, 142, 234)","rgb(0, 0, 0)","rgb(247, 123, 221)","rgb(0, 0, 0)"]
 }
 
 var systemPrompt = DEFAULT_SYSTEM_PROMPT
@@ -115,10 +119,11 @@ function runCommand(command){
             else if (args[0] == "set"){
                 if (args.length == 1){
                     systemPrompt = DEFAULT_SYSTEM_PROMPT;
+                    displayRawTextResponse("Reset system prompt.<br><br>Chat must be cleared for changes to take effect (/clear).");
                 }else{
                     systemPrompt = command.substring(10);
+                    displayRawTextResponse("Set system prompt to <strong>" + command.substring(10) +"</strong>.<br><br>Chat must be cleared for changes to take effect (/clear).");
                 }
-                displayRawTextResponse("Set system prompt to <strong>" + command.substring(10) +"</strong>.<br><br>Chat must be cleared for changes to take effect (/clear).");
             }
             break;
         case "clear":
@@ -131,13 +136,14 @@ inputElement.onkeydown =  function(event) {
     if (event.code === "Enter") {
         console.log("Enter pressed");
         if ((messages.length > 0 && messages[messages.length - 1].role != "user") && !event.shiftKey) {
-            if (inputElement.value.startsWith("/")){
-                runCommand(inputElement.value.slice(1));
+            var inputValue = inputElement.value.trim();
+            if (inputValue.startsWith("/")){
+                runCommand(inputValue.slice(1));
                 inputElement.value = "";
                 autoHeight(inputElement);
                 return false;
             }
-            messages.push({"role":"user","content":inputElement.value});
+            messages.push({"role":"user","content":inputValue});
             inputElement.value = "";
             autoHeight(inputElement);
             displayRawTextResponse('<div class="dot-elastic"></div>');
