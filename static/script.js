@@ -11,23 +11,31 @@ let formattedDate = `${year}-${month}-${day}`;
 const INTRO_MESSAGE = `Welcome to simple-chatgpt. Use /help for a list of commands, or type a prompt to ask GPT-3.5.
     
 Press Shift+Enter to make a newline. Use /clear to clear the conversation and reset. Have fun! 😎🍲`
-const DEFAULT_SYSTEM_PROMPT = `You are SoupGPT, a large language model trained by OpenAI, based on the GPT-3.5 architecture. Knowledge cutoff: 2022-01. Current date: `+formattedDate+`. Include the following emoji in every response: 🍲.`;
+const DEFAULT_SYSTEM_PROMPT = `You are SoupGPT, a large language model trained by OpenAI, based on the GPT-3.5 architecture. Knowledge cutoff: 2022-01. Current date: `+formattedDate;
 const WRONG_AMOUNT_ARGUMENTS = "Wrong amount of command arguments."
 const THEMES = {
-    "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)"],
-    "light": ["rgb(238, 238, 238)","rgb(39, 39, 39)","rgb(255, 255, 255)","rgb(27, 27, 27)"],
-    "aquatic":["rgb(28, 29, 43)","rgb(200, 206, 230)","rgb(20, 19, 32)","rgb(255, 255, 255)"],
-    "field":["rgb(92, 172, 97)","rgb(0, 0, 0)","rgb(88, 155, 83)","rgb(0, 0, 0)"],
-    "sand":["rgb(134, 99, 61)","rgb(226, 230, 200)","rgb(132, 81, 16)","rgb(255, 255, 255)"],
-    "mint":["rgb(179, 213, 163)","rgb(39, 39, 39)","rgb(144, 189, 151)","rgb(0, 0, 0)"],
-    "kirby":["rgb(244, 142, 234)","rgb(0, 0, 0)","rgb(247, 123, 221)","rgb(0, 0, 0)"]
+    "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)","'Fira Code', monospace"],
+    "light": ["rgb(238, 238, 238)","rgb(39, 39, 39)","rgb(255, 255, 255)","rgb(27, 27, 27)","'Fira Code', monospace"],
+    "aquatic":["rgb(28, 29, 43)","rgb(200, 206, 230)","rgb(20, 19, 32)","rgb(255, 255, 255)","'Fira Code', monospace"],
+    "field":["rgb(92, 172, 97)","rgb(0, 0, 0)","rgb(88, 155, 83)","rgb(0, 0, 0)","'Fira Code', monospace"],
+    "sand":["rgb(134, 99, 61)","rgb(226, 230, 200)","rgb(132, 81, 16)","rgb(255, 255, 255)","'Fira Code', monospace"],
+    "mint":["rgb(179, 213, 163)","rgb(39, 39, 39)","rgb(144, 189, 151)","rgb(0, 0, 0)","'Fira Code', monospace"],
+    "kirby":["rgb(244, 142, 234)","rgb(0, 0, 0)","rgb(247, 123, 221)","rgb(0, 0, 0)","'Fira Code', monospace"],
+    "discord":["rgb(49, 51, 56)","rgb(219, 222, 225)","rgb(43, 45, 49)","rgb(56, 58, 64)","'Fira Code', monospace"],
+    "openai":["rgb(52, 53, 65)","rgb(209, 213, 219)","rgb(0, 0, 0)","rgb(86, 86, 98)","'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"]
 }
 
 var systemPrompt = DEFAULT_SYSTEM_PROMPT
 var helpMessage = `/help - display this help message
+
 /system get - displays the current system prompt
-/system set <new system prompt> - set the system prompt. If no new system prompt is specified, revert to default
+
+/system set <new system prompt> - set the system prompt. Eg: /system set You are ChatGPT, a Large Language Model...
+
+/system reset - resets system prompt to default
+
 /theme <new theme> - sets the theme. If no theme is specified, list all themes.
+
 /clear - clears the conversation`
 
 var messages = [{"role":"system","content":systemPrompt}]
@@ -37,8 +45,9 @@ function setTheme(theme){
 
     r.style.setProperty('--backgroundColor', THEMES[theme][0]);
     r.style.setProperty('--textColor', THEMES[theme][1]);
-    r.style.setProperty('--accentColor', THEMES[theme][2]);
+    r.style.setProperty('--secondaryColor', THEMES[theme][2]);
     r.style.setProperty('--highlightColor', THEMES[theme][3]);
+    r.style.setProperty('--fontFamily', THEMES[theme][4]);
 }
 
 function autoHeight(elem) {
@@ -67,6 +76,7 @@ async function fetchData() {
 
         const textResponse = await response.json();
         console.log('Raw text response:', textResponse["contentRaw"]);
+        console.log('Formatted text response:', textResponse["content"]);
         receiveResponse(textResponse["content"],textResponse["contentRaw"],textResponse["success"]);
     } catch (error) {
         console.error('There was a problem fetching the data:', error);
@@ -101,7 +111,11 @@ function runCommand(command){
             break;
         case "theme":
             if (args.length != 1){
-                displayTextResponse("Available themes: "+Object.keys(THEMES).join(', '))
+                displayTextResponse("Available themes: "+Object.keys(THEMES).join(', '));
+                break;
+            }
+            if (!THEMES[args[0]]){
+                displayTextResponse("Theme "+ args[0] + ", doesn't exist. Available themes: "+Object.keys(THEMES).join(', '));
                 break;
             }
             localStorage.setItem("theme",args[0]);
@@ -118,12 +132,14 @@ function runCommand(command){
             }
             else if (args[0] == "set"){
                 if (args.length == 1){
-                    systemPrompt = DEFAULT_SYSTEM_PROMPT;
-                    displayRawTextResponse("Reset system prompt.<br><br>Chat must be cleared for changes to take effect (/clear).");
+                    displayRawTextResponse("No system prompt specified.");
                 }else{
                     systemPrompt = command.substring(10);
                     displayRawTextResponse("Set system prompt to <strong>" + command.substring(10) +"</strong>.<br><br>Chat must be cleared for changes to take effect (/clear).");
                 }
+            }else if (args[0] == "reset"){
+                systemPrompt = DEFAULT_SYSTEM_PROMPT;
+                displayRawTextResponse("Reset sytem prompt.<br><br>Chat must be cleared for changes to take effect (/clear).");
             }
             break;
         case "clear":

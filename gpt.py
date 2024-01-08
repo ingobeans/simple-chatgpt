@@ -1,8 +1,8 @@
 import requests, json
 
-model = "gpt-3.5-turbo" #model doesn't actually matter, website overwrites anyways to always be gpt-3.5-turbo
+model = "gpt-3.5-turbo-0613" #model doesn't actually matter, website overwrites anyways to always be gpt-3.5-turbo-0613, so don't bother changing this to gpt-4 for free access
 
-def get_resp(messages:list[dict],temperature:float=0.5,frequency_penalty:float=0,presence_penalty:float=0) -> str:
+def get_resp(messages:list[dict],temperature:float=0.7,frequency_penalty:float=0.7,presence_penalty:float=0.7) -> str:
     url = "https://chat.mindtastik.com/php/api.php"
     messages_text = json.dumps(messages)
     headers = {

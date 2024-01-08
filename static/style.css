@@ -1,138 +1,142 @@
 body {
-    margin: 0px;
-    color: var(--textColor);
-    background-color: var(--backgroundColor);
-    font-family: 'Fira Code', monospace;
+  margin: 0px;
+  color: var(--textColor);
+  background-color: var(--backgroundColor);
+  font-family: var(--fontFamily);
 }
-
+a:link, a:visited {
+  color: var(--textColor)
+}
 .user-input-container {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    left:50%;
-    padding-bottom: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left:50%;
+  padding-bottom: 10px;
 }
 
 .user-input {  
-    width: 100vw;
-    resize: none;
-    max-width: 1200px;
-    transform: translate(-50%,0);
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: var(--highlightColor);
-    border-style: solid;
-    background-color: var(--backgroundColor);
-    color: var(--textColor);
-    font-size: 16px;
+  width: 100vw;
+  resize: none;
+  max-width: 1200px;
+  transform: translate(-50%,0);
+  border-width: 2px;
+  border-radius: 10px;
+  border-color: var(--highlightColor);
+  border-style: solid;
+  background-color: var(--backgroundColor);
+  color: var(--textColor);
+  font-size: 16px;
 }
 
 .user-input:focus {
-    outline: none;
+  outline: none;
 }
 
 .response-text-container {
-    padding-left: 50%;
+  margin: auto;
+  width: 90%;
+  max-width: 1200px;
 }
 
 .response-text {
-    transform: translate(-50%,0px);
-    width: 100%;  
-    padding-bottom: 50px;
+  width: 100%;  
+  padding-bottom: 50px;
 }
 
 pre {
-    background-color: var(--accentColor);
-    color:var(--textColor);
-    padding:15px;
+  background-color: var(--secondaryColor);
+  color:var(--textColor);
+  padding:15px;
+  border-radius: 10px;
 }
 
 /*
 Yanked from https://codepen.io/nzbin/pen/GGrXbp
 */
 .dot-elastic {
-    position: relative;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--highlightColor);
-    color: var(--highlightColor);
-    animation: dot-elastic 1s infinite linear;
-    left: 50%;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--highlightColor);
+  color: var(--highlightColor);
+  animation: dot-elastic 1s infinite linear;
+  left: 50%;
+}
+.dot-elastic::before, .dot-elastic::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+.dot-elastic::before {
+  left: -15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--highlightColor);
+  color: var(--highlightColor);
+  animation: dot-elastic-before 1s infinite linear;
+}
+.dot-elastic::after {
+  left: 15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--highlightColor);
+  color: var(--highlightColor);
+  animation: dot-elastic-after 1s infinite linear;
+}
+
+@keyframes dot-elastic-before {
+  0% {
+    transform: scale(1, 1);
   }
-  .dot-elastic::before, .dot-elastic::after {
-    content: "";
-    display: inline-block;
-    position: absolute;
-    top: 0;
+  25% {
+    transform: scale(1, 1.5);
   }
-  .dot-elastic::before {
-    left: -15px;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--highlightColor);
-    color: var(--highlightColor);
-    animation: dot-elastic-before 1s infinite linear;
+  50% {
+    transform: scale(1, 0.67);
   }
-  .dot-elastic::after {
-    left: 15px;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: var(--highlightColor);
-    color: var(--highlightColor);
-    animation: dot-elastic-after 1s infinite linear;
+  75% {
+    transform: scale(1, 1);
   }
-  
-  @keyframes dot-elastic-before {
-    0% {
-      transform: scale(1, 1);
-    }
-    25% {
-      transform: scale(1, 1.5);
-    }
-    50% {
-      transform: scale(1, 0.67);
-    }
-    75% {
-      transform: scale(1, 1);
-    }
-    100% {
-      transform: scale(1, 1);
-    }
+  100% {
+    transform: scale(1, 1);
   }
-  @keyframes dot-elastic {
-    0% {
-      transform: scale(1, 1);
-    }
-    25% {
-      transform: scale(1, 1);
-    }
-    50% {
-      transform: scale(1, 1.5);
-    }
-    75% {
-      transform: scale(1, 1);
-    }
-    100% {
-      transform: scale(1, 1);
-    }
+}
+@keyframes dot-elastic {
+  0% {
+    transform: scale(1, 1);
   }
-  @keyframes dot-elastic-after {
-    0% {
-      transform: scale(1, 1);
-    }
-    25% {
-      transform: scale(1, 1);
-    }
-    50% {
-      transform: scale(1, 0.67);
-    }
-    75% {
-      transform: scale(1, 1.5);
-    }
-    100% {
-      transform: scale(1, 1);
-    }
+  25% {
+    transform: scale(1, 1);
   }
+  50% {
+    transform: scale(1, 1.5);
+  }
+  75% {
+    transform: scale(1, 1);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+@keyframes dot-elastic-after {
+  0% {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1, 0.67);
+  }
+  75% {
+    transform: scale(1, 1.5);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
