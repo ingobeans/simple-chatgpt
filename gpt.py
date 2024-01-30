@@ -1,8 +1,11 @@
-import requests, json
+import requests, json, pawankrd, os
 
-model = "gpt-3.5-turbo-0613" #model doesn't actually matter, website overwrites anyways to always be gpt-3.5-turbo-0613, so don't bother changing this to gpt-4 for free access
+pawankrd_key = None
+if os.path.isfile("pawankrd_key.txt"):
+    with open("pawankrd_key.txt","r") as f:
+        pawankrd_key = "pk-"+f.read().removeprefix("pk-")
 
-def get_resp(messages:list[dict],temperature:float=0.7,frequency_penalty:float=0.7,presence_penalty:float=0.7) -> str:
+def generate_response(messages:list[dict],temperature:float=0.7,frequency_penalty:float=0.7,presence_penalty:float=0.7) -> str:
     url = "https://chat.mindtastik.com/php/api.php"
     for m in messages:
         m["content"] = m["content"].replace("'!","!").replace("\"!","!").replace("+"," PLUS ")
@@ -26,7 +29,7 @@ def get_resp(messages:list[dict],temperature:float=0.7,frequency_penalty:float=0
     data = {
         "array_chat": messages_text,
         "employee_name": "AI Chatbot Pro",
-        "model": model,
+        "model": "gpt-3.5-turbo-0613", #model doesn't actually matter, website overwrites anyways to always be gpt-3.5-turbo-0613, so don't bother changing this to gpt-4 for free access,
         "temperature": temperature,
         "frequency_penalty": frequency_penalty,
         "presence_penalty": presence_penalty,
@@ -50,3 +53,15 @@ def get_resp(messages:list[dict],temperature:float=0.7,frequency_penalty:float=0
             except:
                 pass
     return full
+
+def get_resp(messages:list[dict],temperature:float=0.7,frequency_penalty:float=0.7,presence_penalty:float=0.7) -> str:
+    try:
+        return generate_response(messages,temperature,frequency_penalty,presence_penalty)
+    except Exception as e:
+        print(f"Error generating with mindtastik: {e}")
+
+        if not pawankrd_key:
+            return "Error"
+        
+        print("Falling back to Pawan.Krd")
+        return pawankrd.get_resp(messages,pawankrd_key,128,"pai-001",temperature)

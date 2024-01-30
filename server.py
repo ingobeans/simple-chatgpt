@@ -39,4 +39,4 @@ def get_response():
     text = sanitize_and_format(textRaw)
     return jsonify(contentRaw=textRaw,content=text,success=success)
 
-app.run()
+app.run(host="127.0.0.1",port=5000)
