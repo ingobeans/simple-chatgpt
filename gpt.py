@@ -4,6 +4,8 @@ model = "gpt-3.5-turbo-0613" #model doesn't actually matter, website overwrites 
 
 def get_resp(messages:list[dict],temperature:float=0.7,frequency_penalty:float=0.7,presence_penalty:float=0.7) -> str:
     url = "https://chat.mindtastik.com/php/api.php"
+    for m in messages:
+        m["content"] = m["content"].replace("'!","!").replace("\"!","!").replace("+"," PLUS ")
     messages_text = json.dumps(messages)
     headers = {
         "Host": "chat.mindtastik.com",

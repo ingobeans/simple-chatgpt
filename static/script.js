@@ -11,7 +11,7 @@ let formattedDate = `${year}-${month}-${day}`;
 const INTRO_MESSAGE = `Welcome to simple-chatgpt. Use /help for a list of commands, or type a prompt to ask GPT-3.5.
     
 Press Shift+Enter to make a newline. Use /clear to clear the conversation and reset. Have fun! 😎🍲`
-const DEFAULT_SYSTEM_PROMPT = `You are SoupGPT, a large language model trained by OpenAI, based on the GPT-3.5 architecture. Knowledge cutoff: 2022-01. Current date: `+formattedDate;
+const DEFAULT_SYSTEM_PROMPT = `you are bob, an AI assistant. you will speak in the style found in online chat rooms with missing capitalization and punctuations. **never** use emojis. knowledge cutoff: 2022-01. current date: `+formattedDate;
 const WRONG_AMOUNT_ARGUMENTS = "Wrong amount of command arguments."
 const THEMES = {
     "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)","'Fira Code', monospace"],
