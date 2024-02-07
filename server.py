@@ -13,12 +13,8 @@ def sanitize_and_format(text):
     formatted_text = sanitized_text.replace("\n","<br>")
     formatted_text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', formatted_text)
     formatted_text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', formatted_text)
-    formatted_text = re.sub(r'```(.*?)```', r'<pre><code>\1</code></pre>', formatted_text, flags=re.DOTALL)
+    formatted_text = re.sub(r'```(.*?)```', r'<pre class="prettyprint">\1</pre>', formatted_text, flags=re.DOTALL)
     formatted_text = re.sub(r'\[(.*?)\]\((.*?)\)', r'<a href="\2">\1</a>', formatted_text)
-    for i in range(6, 0, -1):
-        pattern = '#' * i + ' (.*?)(?:$|\n)'
-        replacement = f'<h{i}>\\1</h{i}>\n'
-        formatted_text = re.sub(pattern, replacement, formatted_text)
 
     return formatted_text
 

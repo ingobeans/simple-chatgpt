@@ -14,15 +14,15 @@ Press Shift+Enter to make a newline. Use /clear to clear the conversation and re
 const DEFAULT_SYSTEM_PROMPT = `you are bob, an AI assistant. you will speak in the style found in online chat rooms with missing capitalization and punctuations. **never** use emojis. knowledge cutoff: 2022-01. current date: `+formattedDate;
 const WRONG_AMOUNT_ARGUMENTS = "Wrong amount of command arguments."
 const THEMES = {
-    "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)","'Fira Code', monospace"],
-    "light": ["rgb(238, 238, 238)","rgb(39, 39, 39)","rgb(255, 255, 255)","rgb(27, 27, 27)","'Fira Code', monospace"],
-    "aquatic":["rgb(28, 29, 43)","rgb(200, 206, 230)","rgb(20, 19, 32)","rgb(255, 255, 255)","'Fira Code', monospace"],
-    "field":["rgb(92, 172, 97)","rgb(0, 0, 0)","rgb(88, 155, 83)","rgb(0, 0, 0)","'Fira Code', monospace"],
-    "sand":["rgb(134, 99, 61)","rgb(226, 230, 200)","rgb(132, 81, 16)","rgb(255, 255, 255)","'Fira Code', monospace"],
-    "mint":["rgb(179, 213, 163)","rgb(39, 39, 39)","rgb(144, 189, 151)","rgb(0, 0, 0)","'Fira Code', monospace"],
-    "kirby":["rgb(244, 142, 234)","rgb(0, 0, 0)","rgb(247, 123, 221)","rgb(0, 0, 0)","'Fira Code', monospace"],
-    "discord":["rgb(49, 51, 56)","rgb(219, 222, 225)","rgb(43, 45, 49)","rgb(56, 58, 64)","'Fira Code', monospace"],
-    "openai":["rgb(52, 53, 65)","rgb(209, 213, 219)","rgb(0, 0, 0)","rgb(86, 86, 98)","'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"]
+    "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)","'Fira Code', monospace","sunburst.css"],
+    "light": ["rgb(238, 238, 238)","rgb(39, 39, 39)","rgb(255, 255, 255)","rgb(27, 27, 27)","'Fira Code', monospace","default.css"],
+    "aquatic":["rgb(28, 29, 43)","rgb(200, 206, 230)","rgb(20, 19, 32)","rgb(255, 255, 255)","'Fira Code', monospace","sunburst.css"],
+    "field":["rgb(92, 172, 97)","rgb(0, 0, 0)","rgb(88, 155, 83)","rgb(0, 0, 0)","'Fira Code', monospace","default.css"],
+    "sand":["rgb(134, 99, 61)","rgb(226, 230, 200)","rgb(132, 81, 16)","rgb(255, 255, 255)","'Fira Code', monospace","sunburst.css"],
+    "mint":["rgb(179, 213, 163)","rgb(39, 39, 39)","rgb(144, 189, 151)","rgb(0, 0, 0)","'Fira Code', monospace","default.css"],
+    "kirby":["rgb(244, 142, 234)","rgb(0, 0, 0)","rgb(247, 123, 221)","rgb(0, 0, 0)","'Fira Code', monospace","default.css"],
+    "discord":["rgb(49, 51, 56)","rgb(219, 222, 225)","rgb(43, 45, 49)","rgb(56, 58, 64)","'Fira Code', monospace","desert.css"],
+    "openai":["rgb(52, 53, 65)","rgb(209, 213, 219)","rgb(0, 0, 0)","rgb(86, 86, 98)","'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","sunburst.css"],
 }
 
 var systemPrompt = DEFAULT_SYSTEM_PROMPT
@@ -48,6 +48,9 @@ function setTheme(theme){
     r.style.setProperty('--secondaryColor', THEMES[theme][2]);
     r.style.setProperty('--highlightColor', THEMES[theme][3]);
     r.style.setProperty('--fontFamily', THEMES[theme][4]);
+
+    document.getElementById("code-theme").href = "static/code-themes/"+THEMES[theme][5];
+    PR.prettyPrint();
 }
 
 function autoHeight(elem) {
@@ -95,10 +98,12 @@ function receiveResponse(response,raw,success=true){
 
 function displayRawTextResponse(text){
     responseElement.innerHTML = text
+    PR.prettyPrint();
 }
 
 function displayTextResponse(text){
     responseElement.innerText = text
+    PR.prettyPrint();
 }
 
 function runCommand(command){
