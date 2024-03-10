@@ -11,7 +11,7 @@ let formattedDate = `${year}-${month}-${day}`;
 const INTRO_MESSAGE = `Welcome to simple-chatgpt. Use /help for a list of commands, or type a prompt to ask GPT-3.5.
     
 Press Shift+Enter to make a newline. Use /clear to clear the conversation and reset. Have fun! 😎🍲`
-const DEFAULT_SYSTEM_PROMPT = `you are bob, an AI assistant. you will speak in the style found in online chat rooms with missing capitalization and punctuations. **never** use emojis. knowledge cutoff: 2022-01. current date: `+formattedDate;
+const DEFAULT_SYSTEM_PROMPT = `you are bob, an AI assistant. you will speak in the style found in online chat rooms with missing capitalization and punctuations. **never** use emojis.`;
 const WRONG_AMOUNT_ARGUMENTS = "Wrong amount of command arguments."
 const THEMES = {
     "dark": ["rgb(39, 39, 39)","rgb(238, 238, 238)","rgb(27, 27, 27)","rgb(255, 255, 255)","'Fira Code', monospace","sunburst.css"],
@@ -25,7 +25,7 @@ const THEMES = {
     "openai":["rgb(52, 53, 65)","rgb(209, 213, 219)","rgb(0, 0, 0)","rgb(86, 86, 98)","'Segoe UI', Tahoma, Geneva, Verdana, sans-serif","sunburst.css"],
 }
 
-var systemPrompt = DEFAULT_SYSTEM_PROMPT
+var systemPrompt = "";
 var helpMessage = `/help - display this help message
 
 /system get - displays the current system prompt
@@ -39,6 +39,12 @@ var helpMessage = `/help - display this help message
 /clear - clears the conversation`
 
 var messages = [{"role":"system","content":systemPrompt}]
+
+function setSystemPromt(prompt){
+    systemPrompt = prompt;
+    localStorage.setItem("system",systemPrompt);
+    messages[0]["content"] = systemPrompt;
+}
 
 function setTheme(theme){
     var r = document.querySelector('body');
@@ -139,12 +145,13 @@ function runCommand(command){
                 if (args.length == 1){
                     displayRawTextResponse("No system prompt specified.");
                 }else{
-                    systemPrompt = command.substring(10);
-                    displayRawTextResponse("Set system prompt to <strong>" + command.substring(10) +"</strong>.<br><br>Chat must be cleared for changes to take effect (/clear).");
+                    setSystemPromt(command.substring(10));
+                    
+                    displayRawTextResponse("Set system prompt to <strong>" + command.substring(10) +"</strong>.<br><br>Note that changes may not be apparent until chat reset (/clear).");
                 }
             }else if (args[0] == "reset"){
-                systemPrompt = DEFAULT_SYSTEM_PROMPT;
-                displayRawTextResponse("Reset sytem prompt.<br><br>Chat must be cleared for changes to take effect (/clear).");
+                setSystemPromt(DEFAULT_SYSTEM_PROMPT);
+                displayRawTextResponse("Reset sytem prompt.<br><br>Note that changes may not be apparent until chat reset (/clear).");
             }
             break;
         case "clear":
@@ -182,7 +189,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if(localStorage.getItem("theme") == null){
         localStorage.setItem("theme","dark");
+        localStorage.setItem("system",DEFAULT_SYSTEM_PROMPT);
     }
+    setSystemPromt(localStorage.getItem("system"));
     setTheme(localStorage.getItem("theme"));
     displayTextResponse(INTRO_MESSAGE);
 });
